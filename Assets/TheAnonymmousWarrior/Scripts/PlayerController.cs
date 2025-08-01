@@ -5,25 +5,31 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
-    public InputSystem_Actions InputAction { get; private set; }
-    private IState _currentState;
+    private InputSystem_Actions _inputAction;
+    private IPlayerState _currentState;
 
     private Rigidbody2D _rigidbody;
+    [SerializeField] private GroundSensor _groundSensor;
 
     public event Action OnAtackEvent;
     public event Action OnJumpActionEvent;
+    public event Action OnGroundEvent;
+    public event Action OnAirbornEvent;
     public event Action<float> OnRunEvent;
     public event Action OnIdleEvent;
 
     private void Awake()
     {
-        InputAction = new InputSystem_Actions();
+        _inputAction = new InputSystem_Actions();
         _rigidbody = GetComponent<Rigidbody2D>();
+
+        _groundSensor.OnGroundEvent += OnGround;
+        _groundSensor.OnAirbornEvent += OnAirborn;
     }
 
     private void OnEnable()
     {
-        InputAction.Enable();
+        _inputAction.Enable();
     }
 
     void Start()
@@ -35,19 +41,14 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        _currentState.OnUpdate(this);
+        _currentState.OnUpdate(this, _inputAction.Player);
     }
 
-    private void StartNewState(IState newState)
+    private void StartNewState(IPlayerState newState)
     {
         _currentState.Exit(this);
         _currentState = newState;
         _currentState.Enter(this);
-    }
-
-    private void OnDisable()
-    {
-        InputAction.Disable();
     }
 
     public void OnAttackAction()
@@ -58,12 +59,19 @@ public class PlayerController : MonoBehaviour
     public void OnJumpAction()
     {
         _rigidbody.AddForceY(200);
-        OnJumpActionEvent?.Invoke();
+        // OnAirbornEvent?.Invoke();
+        // OnJumpActionEvent?.Invoke();
+    }
+
+    public void OnAirborn()
+    {
+        StartNewState(new AirbornPlayerState());
+        OnAirbornEvent?.Invoke();
     }
 
     public void OnMoveAction()
     {
-        if (_currentState.GetType() != typeof(RunState))
+        if (_currentState.GetType() != typeof(AirbornPlayerState))
         {
             StartNewState(new RunState());
         }
@@ -80,38 +88,39 @@ public class PlayerController : MonoBehaviour
         StartNewState(new IdleState());
         OnIdleEvent?.Invoke();
     }
+
+    public void OnGround()
+    {
+        OnIdle();
+        OnGroundEvent?.Invoke();
+    }
+    
+    private void OnDisable()
+    {
+        _inputAction.Disable();
+    }
 }
 
-public interface IState
+public class IdleState : IPlayerState
 {
-    void Enter(PlayerController playerController);
-    void OnUpdate(PlayerController playerController);
-    void Exit(PlayerController playerController);
-}
-
-public class IdleState : IState
-{
-    private InputSystem_Actions.PlayerActions _inputActionPlayer;
-
     public void Enter(PlayerController playerController)
     {
         Debug.Log("Enter Idle state");
-        _inputActionPlayer = playerController.InputAction.Player;
     }
 
-    public void OnUpdate(PlayerController playerController)
+    public void OnUpdate(PlayerController playerController, InputSystem_Actions.PlayerActions input)
     {
-        if (_inputActionPlayer.Attack.triggered)
+        if (input.Attack.triggered)
         {
             playerController.OnAttackAction();
         }
 
-        if (_inputActionPlayer.Jump.triggered)
+        if (input.Jump.triggered)
         {
             playerController.OnJumpAction();
         }
 
-        if (_inputActionPlayer.Move.ReadValue<Vector2>().magnitude != 0)
+        if (input.Move.ReadValue<Vector2>().magnitude != 0)
         {
             playerController.OnMoveAction();
         }
@@ -123,14 +132,14 @@ public class IdleState : IState
     }
 }
 
-public class AttackState : IState
+public class AttackState : IPlayerState
 {
     public void Enter(PlayerController playerController)
     {
         Debug.Log("Enter Attack state");
     }
 
-    public void OnUpdate(PlayerController playerController)
+    public void OnUpdate(PlayerController playerController, InputSystem_Actions.PlayerActions input)
     {
         playerController.OnIdle();
     }
@@ -142,29 +151,26 @@ public class AttackState : IState
 }
 
 
-public class RunState : IState
+public class RunState : IPlayerState
 {
-    private InputSystem_Actions.PlayerActions _inputActionPlayer;
-
     public void Enter(PlayerController playerController)
     {
         Debug.Log("Enter Run state");
-        _inputActionPlayer = playerController.InputAction.Player;
     }
 
-    public void OnUpdate(PlayerController playerController)
+    public void OnUpdate(PlayerController playerController, InputSystem_Actions.PlayerActions input)
     {
-        if (_inputActionPlayer.Attack.triggered)
+        if (input.Attack.triggered)
         {
             playerController.OnAttackAction();
         }
 
-        if (_inputActionPlayer.Jump.triggered)
+        if (input.Jump.triggered)
         {
             playerController.OnJumpAction();
         }
 
-        var moveVector = _inputActionPlayer.Move.ReadValue<Vector2>();
+        var moveVector = input.Move.ReadValue<Vector2>();
 
         if (moveVector.magnitude != 0)
         {
@@ -179,35 +185,5 @@ public class RunState : IState
     public void Exit(PlayerController playerController)
     {
         Debug.Log("Exit Run state");
-    }
-}
-
-public class AirbornState : IState
-{
-    private InputSystem_Actions.PlayerActions _inputActionPlayer;
-
-    public void Enter(PlayerController playerController)
-    {
-        Debug.Log("Enter Airborn state");
-        _inputActionPlayer = playerController.InputAction.Player;
-    }
-
-    public void OnUpdate(PlayerController playerController)
-    {
-        var moveVector = _inputActionPlayer.Move.ReadValue<Vector2>();
-
-        if (moveVector.magnitude != 0)
-        {
-            playerController.OnMoveInput(moveVector);
-        }
-        else
-        {
-            playerController.OnIdle();
-        }
-    }
-
-    public void Exit(PlayerController playerController)
-    {
-        Debug.Log("Exit Airborn state");
     }
 }

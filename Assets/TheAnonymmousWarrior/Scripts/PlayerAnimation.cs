@@ -4,31 +4,37 @@ using UnityEngine;
 public class PlayerAnimation : MonoBehaviour
 {
     private Animator _animator;
-    private PlayerController _controller;
-    
+    private PlayerController _playerController;
+    private static readonly int Run = Animator.StringToHash("run");
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         _animator = GetComponent<Animator>();
-        _controller = GetComponent<PlayerController>();
-        _controller.OnIdleEvent += Controller_OnIdleEvent;
-        _controller.OnJumpActionEvent += Controller_OnJumpActionEvent;
-        _controller.OnRunEvent += Controller_OnRunEvent;
+        _playerController = GetComponent<PlayerController>();
+        _playerController.OnIdleEvent += PlayerControllerOnIdleEvent;
+        _playerController.OnGroundEvent += PlayerController_OnGroundEvent;
+        _playerController.OnAirbornEvent += StateMachineOnAirbornEvent;
+        _playerController.OnRunEvent += StateMachineOnRunEvent;
     }
 
-    private void Controller_OnRunEvent(float input)
+    private void PlayerController_OnGroundEvent()
     {
-        _animator.SetInteger("run", Mathf.RoundToInt(input));
+        _animator.Play("Idle");
     }
 
-    private void Controller_OnJumpActionEvent()
+    private void StateMachineOnAirbornEvent()
     {
         _animator.Play("Jump");
     }
 
-    private void Controller_OnIdleEvent()
+    private void PlayerControllerOnIdleEvent()
     {
-        _animator.SetInteger("run", 0);
-        _animator.Play("Idle");
+        _animator.SetInteger(Run, 0);
+    }
+    
+    private void StateMachineOnRunEvent(float input)
+    {
+        _animator.SetInteger(Run, Mathf.RoundToInt(input));
     }
 }
