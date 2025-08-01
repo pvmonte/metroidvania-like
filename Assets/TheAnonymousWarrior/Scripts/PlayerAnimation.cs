@@ -14,8 +14,8 @@ public class PlayerAnimation : MonoBehaviour
         _playerController = GetComponent<PlayerController>();
         _playerController.OnIdleEvent += PlayerControllerOnIdleEvent;
         _playerController.OnGroundEvent += PlayerController_OnGroundEvent;
-        _playerController.OnAirbornEvent += StateMachineOnAirbornEvent;
-        _playerController.OnRunEvent += StateMachineOnRunEvent;
+        _playerController.OnAirbornEvent += PlayerControllerOnAirbornEvent;
+        _playerController.OnRunEvent += PlayerControllerOnRunEvent;
     }
 
     private void PlayerController_OnGroundEvent()
@@ -23,7 +23,7 @@ public class PlayerAnimation : MonoBehaviour
         _animator.Play("Idle");
     }
 
-    private void StateMachineOnAirbornEvent()
+    private void PlayerControllerOnAirbornEvent()
     {
         _animator.Play("Jump");
     }
@@ -33,8 +33,14 @@ public class PlayerAnimation : MonoBehaviour
         _animator.SetInteger(Run, 0);
     }
     
-    private void StateMachineOnRunEvent(float input)
+    private void PlayerControllerOnRunEvent(float input)
     {
         _animator.SetInteger(Run, Mathf.RoundToInt(input));
+
+        if (input == 0) return;
+
+        var scaleVector = Vector3.one;
+        scaleVector.x = Mathf.Ceil(input);
+        transform.localScale = scaleVector;
     }
 }
