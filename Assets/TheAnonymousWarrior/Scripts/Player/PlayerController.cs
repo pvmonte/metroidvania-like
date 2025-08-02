@@ -16,6 +16,7 @@ public class PlayerController : MonoBehaviour
     public event Action OnJumpActionEvent;
     public event Action OnGroundEvent;
     public event Action OnAirbornEvent;
+    public event Action OnAirAttackEvent;
     public event Action<float> OnRunEvent;
     public event Action OnIdleEvent;
 
@@ -66,6 +67,12 @@ public class PlayerController : MonoBehaviour
     {
         StartNewState(new AttackState());
         OnAttackEvent?.Invoke();
+    }
+
+    public void OnAirAttackAction()
+    {
+        StartNewState(new PlayerAirbornAttackState());
+        OnAirAttackEvent?.Invoke();
     }
 
     public void OnJumpAction()

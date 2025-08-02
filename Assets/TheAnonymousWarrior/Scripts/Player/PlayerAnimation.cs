@@ -14,10 +14,16 @@ public class PlayerAnimation : MonoBehaviour
         _playerController = GetComponent<PlayerController>();
         _playerController.OnIdleEvent += PlayerControllerOnIdleEvent;
         _playerController.OnGroundEvent += PlayerController_OnGroundEvent;
-        _playerController.OnAirbornEvent += PlayerControllerOnAirbornEvent;
         _playerController.OnRunEvent += PlayerControllerOnRunEvent;
+        _playerController.OnAirbornEvent += PlayerControllerOnAirbornEvent;
+        _playerController.OnAirAttackEvent += PlayerController_OnAirAttackEvent;
         
         _playerController.OnAttackEvent += PlayerController_OnAttackEvent;
+    }
+
+    private void PlayerController_OnAirAttackEvent()
+    {
+        _animator.Play("Attack2");
     }
 
     private void PlayerController_OnAttackEvent()
