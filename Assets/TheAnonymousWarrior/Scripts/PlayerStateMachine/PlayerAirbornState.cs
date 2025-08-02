@@ -6,11 +6,6 @@ namespace TheAnonymousWarrior.Scripts.PlayerStateMachine
     {
         private Vector2 moveVector;
 
-        public void Enter(PlayerController playerController)
-        {
-            Debug.Log("Enter Airborn state");
-        }
-
         public void OnUpdate(PlayerController playerController, InputSystem_Actions.PlayerActions input)
         {
             moveVector = input.Move.ReadValue<Vector2>();
@@ -19,11 +14,6 @@ namespace TheAnonymousWarrior.Scripts.PlayerStateMachine
         public void OnFixedUpdate(PlayerController playerController)
         {
             playerController.OnMoveInput(moveVector);
-        }
-
-        public void Exit(PlayerController playerController)
-        {
-            Debug.Log("Exit Airborn state");
         }
     }
 }

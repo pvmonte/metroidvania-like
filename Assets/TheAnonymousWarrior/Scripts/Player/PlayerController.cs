@@ -33,7 +33,6 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         _currentState = new IdleState();
-        _currentState.Enter(this);
 
         _groundSensor.OnGroundEvent += OnGround;
         _groundSensor.OnAirbornEvent += OnAirborn;
@@ -54,9 +53,7 @@ public class PlayerController : MonoBehaviour
     {
         if (_currentState.GetType() == newState.GetType()) return;
         
-        _currentState.Exit(this);
         _currentState = newState;
-        _currentState.Enter(this);
     }
 
     public void OnIdle()

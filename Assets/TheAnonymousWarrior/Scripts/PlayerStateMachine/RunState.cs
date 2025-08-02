@@ -6,11 +6,6 @@ namespace TheAnonymousWarrior.Scripts.PlayerStateMachine
     {
         private Vector2 moveVector;
 
-        public void Enter(PlayerController playerController)
-        {
-            Debug.Log("Enter Run state");
-        }
-
         public void OnUpdate(PlayerController playerController, InputSystem_Actions.PlayerActions input)
         {
             if (input.Attack.triggered)
@@ -33,11 +28,6 @@ namespace TheAnonymousWarrior.Scripts.PlayerStateMachine
             if (moveVector.magnitude != 0) return;
             
             playerController.OnIdle();
-        }
-
-        public void Exit(PlayerController playerController)
-        {
-            Debug.Log("Exit Run state");
         }
     }
 }
