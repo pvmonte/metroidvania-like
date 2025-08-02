@@ -11,7 +11,7 @@ namespace TheAnonymousWarrior.Scripts.PlayerStateMachine
 
         public void OnUpdate(PlayerController playerController, InputSystem_Actions.PlayerActions input)
         {
-            playerController.OnIdle();
+            
         }
 
         public void OnFixedUpdate(PlayerController playerController)

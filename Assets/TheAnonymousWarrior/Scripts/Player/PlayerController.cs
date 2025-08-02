@@ -12,7 +12,7 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D _rigidbody;
     [SerializeField] private GroundSensor _groundSensor;
 
-    public event Action OnAtackEvent;
+    public event Action OnAttackEvent;
     public event Action OnJumpActionEvent;
     public event Action OnGroundEvent;
     public event Action OnAirbornEvent;
@@ -52,6 +52,8 @@ public class PlayerController : MonoBehaviour
 
     private void StartNewState(IPlayerState newState)
     {
+        if (_currentState.GetType() == newState.GetType()) return;
+        
         _currentState.Exit(this);
         _currentState = newState;
         _currentState.Enter(this);
@@ -66,6 +68,7 @@ public class PlayerController : MonoBehaviour
     public void OnAttackAction()
     {
         StartNewState(new AttackState());
+        OnAttackEvent?.Invoke();
     }
 
     public void OnJumpAction()

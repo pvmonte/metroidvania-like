@@ -16,6 +16,13 @@ public class PlayerAnimation : MonoBehaviour
         _playerController.OnGroundEvent += PlayerController_OnGroundEvent;
         _playerController.OnAirbornEvent += PlayerControllerOnAirbornEvent;
         _playerController.OnRunEvent += PlayerControllerOnRunEvent;
+        
+        _playerController.OnAttackEvent += PlayerController_OnAttackEvent;
+    }
+
+    private void PlayerController_OnAttackEvent()
+    {
+        _animator.Play("Attack1");
     }
 
     private void PlayerController_OnGroundEvent()
