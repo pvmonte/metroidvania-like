@@ -21,19 +21,9 @@ namespace TheAnonymousWarrior.Scripts.Player
             await Awaitable.WaitForSecondsAsync(_animationDelay);
             _collider.enabled = true;
             await Awaitable.WaitForSecondsAsync(_attackDuration);
-            _controller.OnIdle();
             _collider.enabled = false;
         }
-
-        protected void OnCollisionEnter2D(Collision2D other)
-        {
-            if (other.gameObject.TryGetComponent(out IDamageable damageable))
-            {
-                damageable.TakeDamage(1);
-            }
-        }
-
-
+        
         protected void OnTriggerEnter2D(Collider2D other)
         {
             if (other.gameObject.TryGetComponent(out IDamageable damageable))

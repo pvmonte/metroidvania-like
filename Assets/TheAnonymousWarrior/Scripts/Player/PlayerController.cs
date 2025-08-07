@@ -99,7 +99,7 @@ public class PlayerController : MonoBehaviour
         OnGroundEvent?.Invoke();
     }
 
-    private void OnAirborn()
+    public void OnAirborn()
     {
         StartNewState(new PlayerAirbornState());
         OnAirbornEvent?.Invoke();
