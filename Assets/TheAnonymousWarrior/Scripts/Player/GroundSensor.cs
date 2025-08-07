@@ -3,25 +3,16 @@ using UnityEngine;
 
 public class GroundSensor : MonoBehaviour
 {
+    [SerializeField] private BoxCollider2D _boxCollider;
     [SerializeField] private LayerMask _groundLayer;
 
     public event Action OnGroundEvent; 
-    public event Action OnAirbornEvent; 
-    
-    private void OnCollisionEnter2D(Collision2D other)
-    {
-        if (other.gameObject.layer == _groundLayer)
-        {
-            OnGroundEvent?.Invoke();
-        }
-    }
+    public event Action OnAirbornEvent;
 
-    private void OnCollisionExit2D(Collision2D other)
+    public bool CheckGround()
     {
-        if (other.gameObject.layer == _groundLayer)
-        {
-            OnAirbornEvent?.Invoke();
-        }
+        var result = Physics2D.OverlapBox(transform.position, _boxCollider.size, 0);
+        return !(result is null);
     }
 
     private void OnTriggerEnter2D(Collider2D other)

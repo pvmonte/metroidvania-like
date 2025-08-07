@@ -3,16 +3,14 @@ using UnityEngine;
 
 namespace TheAnonymousWarrior.Scripts.Player
 {
-    public abstract class PlayerAttack : MonoBehaviour
+    public abstract class Attack : MonoBehaviour
     {
-        protected PlayerController _controller;
         protected Collider2D _collider;
         [SerializeField] protected float _animationDelay = 0.25f;
         [SerializeField] protected float _attackDuration = 0.25f;
 
         protected virtual void Start()
         {
-            _controller = GetComponentInParent<PlayerController>();
             _collider = GetComponent<Collider2D>();
         }
 

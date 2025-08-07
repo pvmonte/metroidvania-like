@@ -1,10 +1,13 @@
 namespace TheAnonymousWarrior.Scripts.Player
 {
-    public class PlayerGroundAttack : PlayerAttack
+    public class GroundAttack : Attack
     {
+        protected PlayerController _controller;
+
         protected override void Start()
         {
             base.Start();
+            _controller = GetComponentInParent<PlayerController>();
             _controller.OnAttackEvent += ControllerOnAttackEvent;
         }
     

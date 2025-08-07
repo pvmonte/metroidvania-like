@@ -4,10 +4,28 @@ using UnityEngine;
 public class EnemyDummy : MonoBehaviour , IDamageable
 {
     private SpriteRenderer _spriteRenderer;
+    [SerializeField] private Animator _animator; 
+
+    private float _attackTimer = 3;
+    private float _currentTimer = 3;
+
+    public event Action OnAttackEvent;
     
     private void Start()
     {
         _spriteRenderer = GetComponent<SpriteRenderer>();
+    }
+
+    private void Update()
+    {
+        _currentTimer -= Time.deltaTime;
+
+        if (_currentTimer <= 0)
+        {
+            _currentTimer = _attackTimer;
+            _animator.Play("DummyAttack");
+            OnAttackEvent?.Invoke();
+        }
     }
 
     public void TakeDamage(int value)

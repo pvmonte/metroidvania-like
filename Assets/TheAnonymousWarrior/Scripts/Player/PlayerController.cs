@@ -4,7 +4,7 @@ using TheAnonymousWarrior.Scripts.PlayerStateMachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour , IDamageable
 {
     private InputSystem_Actions _inputAction;
     private IPlayerState _currentState;
@@ -19,6 +19,8 @@ public class PlayerController : MonoBehaviour
     public event Action OnAirAttackEvent;
     public event Action<float> OnRunEvent;
     public event Action OnIdleEvent;
+    public event Action OnHurtEvent;
+
 
     private void Awake()
     {
@@ -39,7 +41,6 @@ public class PlayerController : MonoBehaviour
         _groundSensor.OnAirbornEvent += OnAirborn;
     }
 
-    // Update is called once per frame
     void Update()
     {
         _currentState.OnUpdate(this, _inputAction.Player);
@@ -103,6 +104,28 @@ public class PlayerController : MonoBehaviour
     {
         StartNewState(new PlayerAirbornState());
         OnAirbornEvent?.Invoke();
+    }
+
+    private void OnHurt()
+    {
+        StartNewState(new HurtState());
+    }
+
+    public void TakeDamage(int damage)
+    {
+        OnHurt();
+        OnHurtEvent?.Invoke();
+    }
+    
+    public void Recover()
+    {
+        if (_groundSensor.CheckGround())
+        {
+            OnIdle();
+            return;
+        }
+        
+        OnAirborn();
     }
 
     private void OnDisable()

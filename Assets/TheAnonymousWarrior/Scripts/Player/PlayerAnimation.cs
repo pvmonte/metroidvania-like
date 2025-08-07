@@ -17,8 +17,13 @@ public class PlayerAnimation : MonoBehaviour
         _playerController.OnRunEvent += PlayerControllerOnRunEvent;
         _playerController.OnAirbornEvent += PlayerControllerOnAirbornEvent;
         _playerController.OnAirAttackEvent += PlayerController_OnAirAttackEvent;
-        
         _playerController.OnAttackEvent += PlayerController_OnAttackEvent;
+        _playerController.OnHurtEvent += PlayerController_OnHurtEvent;
+    }
+
+    private void PlayerController_OnHurtEvent()
+    {
+        _animator.Play("Hit");
     }
 
     private void PlayerController_OnAirAttackEvent()
