@@ -6,6 +6,8 @@ public class PlayerAnimation : MonoBehaviour
     private Animator _animator;
     private PlayerController _playerController;
     private static readonly int Run = Animator.StringToHash("run");
+    private static readonly int Hurt = Animator.StringToHash("hurt");
+    private static readonly int Attack = Animator.StringToHash("attack");
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -16,24 +18,19 @@ public class PlayerAnimation : MonoBehaviour
         _playerController.OnGroundEvent += PlayerController_OnGroundEvent;
         _playerController.OnRunEvent += PlayerControllerOnRunEvent;
         _playerController.OnAirbornEvent += PlayerControllerOnAirbornEvent;
-        _playerController.OnAirAttackEvent += PlayerController_OnAirAttackEvent;
+        _playerController.OnAirAttackEvent += PlayerController_OnAttackEvent;
         _playerController.OnAttackEvent += PlayerController_OnAttackEvent;
         _playerController.OnHurtEvent += PlayerController_OnHurtEvent;
     }
 
     private void PlayerController_OnHurtEvent()
     {
-        _animator.Play("Hit");
-    }
-
-    private void PlayerController_OnAirAttackEvent()
-    {
-        _animator.Play("Attack2");
+        _animator.SetTrigger(Hurt);
     }
 
     private void PlayerController_OnAttackEvent()
     {
-        _animator.Play("Attack1");
+        _animator.SetTrigger(Attack);
     }
 
     private void PlayerController_OnGroundEvent()
@@ -48,12 +45,12 @@ public class PlayerAnimation : MonoBehaviour
 
     private void PlayerControllerOnIdleEvent()
     {
-        _animator.SetInteger(Run, 0);
+        _animator.SetFloat(Run, 0);
     }
     
     private void PlayerControllerOnRunEvent(float input)
     {
-        _animator.SetInteger(Run, Mathf.RoundToInt(input));
+        _animator.SetFloat(Run, input);
 
         if (input == 0) return;
 

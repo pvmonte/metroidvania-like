@@ -16,7 +16,7 @@ namespace TheAnonymousWarrior.Scripts.PlayerStateMachine
                 playerController.OnJumpAction();
             }
 
-            if (input.Move.ReadValue<Vector2>().magnitude != 0)
+            if (input.Move.ReadValue<Vector2>().x != 0)
             {
                 playerController.OnMoveAction();
             }

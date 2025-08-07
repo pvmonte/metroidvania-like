@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour , IDamageable
 {
     private InputSystem_Actions _inputAction;
     private IPlayerState _currentState;
+    [SerializeField] private string state;
 
     private Rigidbody2D _rigidbody;
     [SerializeField] private GroundSensor _groundSensor;
@@ -44,6 +45,7 @@ public class PlayerController : MonoBehaviour , IDamageable
     void Update()
     {
         _currentState.OnUpdate(this, _inputAction.Player);
+        state = _currentState.ToString();
     }
 
     private void FixedUpdate()

@@ -25,7 +25,7 @@ namespace TheAnonymousWarrior.Scripts.PlayerStateMachine
         {
             playerController.OnMoveInput(moveVector);
 
-            if (moveVector.magnitude != 0) return;
+            if (moveVector.x != 0) return;
             
             playerController.OnIdle();
         }
